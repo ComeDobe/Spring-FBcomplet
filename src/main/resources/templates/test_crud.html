@@ -1,0 +1,166 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="utf-8" />-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0">-->
+<!--    <title></title>-->
+<!--</head>-->
+<!--<body>-->
+
+<!--<form onsubmit=" return ajoutUtilisateur ()">-->
+<!--    <input id=" prenom" type="text">-->
+<!--    <input id=" nom" type="text">-->
+<!--    <input type="submit" value="Ajouter l'utilisateur">-->
+<!--</form>-->
+
+
+<!--<ul id = "liste-utilisateur"></ul>-->
+
+<!--<script>-->
+
+<!--    // function  ajoutUtilisateur () {-->
+<!--    //-->
+<!--    //     // on recupere les champs dans le dom-->
+<!--    // const champsPrenom = document.querySelector("#prenom")-->
+<!--    //     const champsNom = document.querySelector("#nom")-->
+<!--    //-->
+<!--    //     // on creait  un objet utilisateur avec les valeurs des champs-->
+<!--    //     const utilisateur = {-->
+<!--    //     prenom: champsPrenom.value,-->
+<!--    //         nom:champsNom.value,-->
+<!--    //     }-->
+<!--    //-->
+<!--    //-->
+<!--    //     console.log(utilisateur)-->
+<!--    //-->
+<!--    //     return false;-->
+<!--    // }-->
+
+
+<!--    function ajoutUtilisateur() {-->
+<!--        //on recupére les champs dans le DOM-->
+<!--        const champsPrenom = document.querySelector("#prenom");-->
+<!--        const champsNom = document.querySelector("#nom");-->
+
+<!--        //on créait un objet utilisateur avec les valeur des champs-->
+<!--        const utilisateur = {-->
+<!--            prenom: champsPrenom.value,-->
+<!--            nom: champsNom.value,-->
+<!--        };-->
+
+<!--        console.log(utilisateur);-->
+
+<!--        return false;-->
+<!--    }-->
+<!--    const baliseUl = document.querySelector("#liste-utilisateur")-->
+
+<!--    raffaichir()-->
+<!--    function raffaichir () {-->
+<!--        baliseUl.innerHTML = "";-->
+
+<!--        fetch("http://localhost:8080/utilisateur/")-->
+<!--            .then(response => response.json())-->
+<!--            .then((utilisateur) =>{-->
+
+<!--                utilisateur.forEach(element => {-->
+<!--                    const baliseLi = document.createElement("li")-->
+<!--                    baliseLi.innerHTML = `<span>${element.prenom} ${element.nom}</span> `-->
+
+<!--                    const boutonSupprimer = document.createElement("button");-->
+<!--                    boutonSupprimer.innerHTML = "x"-->
+<!--                    baliseLi.appendChild(boutonSupprimer)-->
+
+
+<!--                    boutonSupprimer.addEventListener("click", e =>{-->
+<!--                        fetch("http://localhost:8080/utilisateur/" +element.id, { method: "DELETE"})-->
+<!--                            .then( resultat => console.log(resultat))-->
+<!--                    });-->
+<!--                    //baliseLi.innerHTML = element.prenom + " " + element.nom-->
+<!--                    baliseUl.appendChild(baliseLi)-->
+<!--                });-->
+<!--            });-->
+<!--        //.catch(error => console.error(error));-->
+
+<!--    }-->
+
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+
+
+<!-- Franck Bancept-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+</head>
+<body>
+<form onsubmit="return ajoutUtilisateur()">
+    <input id="prenom" type="text" />
+    <input id="nom" type="text" />
+    <input type="submit" value="Ajouter l'utilisateur" />
+</form>
+
+<ul id="liste-utilisateur"></ul>
+
+<script>
+    function ajoutUtilisateur() {
+        //on recupére les champs dans le DOM
+        const champsPrenom = document.querySelector("#prenom");
+        const champsNom = document.querySelector("#nom");
+
+        //on créait un objet utilisateur avec les valeur des champs
+        const utilisateur = {
+            prenom: champsPrenom.value,
+            nom: champsNom.value,
+        };
+
+        const jsonUtilisateur = JSON.stringify(utilisateur);
+        const enTete = new Headers();
+        enTete.set('Content-Type', 'application/json');
+
+        fetch("http://localhost:8081/utilisateur", {
+            method: "POST",
+            body: jsonUtilisateur,
+            headers:enTete
+        }).then((resultat) => raffraichir());
+
+        return false;
+    }
+
+    const baliseUl = document.querySelector("#liste-utilisateur");
+    raffraichir();
+
+    function raffraichir() {
+        baliseUl.innerHTML = "";
+
+        fetch("http://localhost:8081/utilisateur")
+            .then((reponse) => reponse.json())
+            .then((utilisateurs) => {
+                utilisateurs.forEach((element) => {
+                    const baliseLi = document.createElement("li");
+                    baliseLi.innerHTML = `<span>${element.prenom} ${element.nom}</span>`;
+
+                    const boutonSupprimer = document.createElement("button");
+                    boutonSupprimer.innerHTML = "X";
+                    baliseLi.appendChild(boutonSupprimer);
+
+                    boutonSupprimer.addEventListener("click", (e) => {
+                        fetch("http://localhost:8081/utilisateur/" + element.id, {
+                            method: "DELETE",
+                        }).then((resultat) => raffraichir());
+                    });
+
+                    baliseUl.appendChild(baliseLi);
+                });
+            });
+    }
+</script>
+</body>
+</html>
