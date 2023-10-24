@@ -16,8 +16,10 @@
 
 	<packaging>war</packaging>
 
+
 	<properties>
 		<java.version>11</java.version>
+		<skipUnitTest>false</skipUnitTest>
 	</properties>
 
 	<dependencies>
@@ -79,8 +81,57 @@
 		</dependency>
 	</dependencies>
 
+<!--	affichage des profils-->
+
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<activation>
+			<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<skipUnitTest> false</skipUnitTest>
+				<adresse_serveur_bdd>localhost:3306</adresse_serveur_bdd>
+				<nom_bdd>utilisateur</nom_bdd>
+				<utilisateur_bdd>root</utilisateur_bdd>
+				<mot_de_passe_bdd></mot_de_passe_bdd>
+				<ddl_auto>create</ddl_auto>
+				<nom_fichier_sql>mysql</nom_fichier_sql>
+				<initialisation_donnee_bdd>true</initialisation_donnee_bdd>
+				<mode_initialisation_donnee_bdd>always</mode_initialisation_donnee_bdd>
+				<dossier_upload>C:\\\\Users\\neofr\\OneDrive\\Documents\\cours\\java\\spring\\uploads</dossier_upload>
+				<jwt_secret>azerty</jwt_secret>
+			</properties>
+		</profile>
+
+		<profile>
+			<id>prod</id>
+			<properties>
+				<skipUnitTest> true</skipUnitTest>
+				<adresse_serveur_bdd>172.18.0.2:3306</adresse_serveur_bdd>
+				<nom_bdd>utilisateur</nom_bdd>
+				<utilisateur_bdd>root</utilisateur_bdd>
+				<mot_de_passe_bdd></mot_de_passe_bdd>
+				<ddl_auto>none</ddl_auto>
+				<nom_fichier_sql></nom_fichier_sql>
+				<initialisation_donnee_bdd>false</initialisation_donnee_bdd>
+				<mode_initialisation_donnee_bdd>never</mode_initialisation_donnee_bdd>
+				<dossier_upload>/uploads</dossier_upload>
+				<jwt_secret>azerty</jwt_secret>
+			</properties>
+		</profile>
+	</profiles>
+
 	<build>
+
+		<resources>
+			<resource>
+				<filtering>true</filtering>
+				<directory>src/main/resources</directory>
+			</resource>
+		</resources>
 		<plugins>
+
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
@@ -91,7 +142,7 @@
 				<artifactId >maven-surefire-plugin</artifactId>
 				<version>3.0.0-M6</version>
 				<configuration>
-					<skipTests>true</skipTests>
+					<skipTests>${skipUnitTest}</skipTests>
 				</configuration>
 			</plugin>
 

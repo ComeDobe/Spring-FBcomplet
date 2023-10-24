@@ -28,8 +28,8 @@ INSERT INTO `role` (`id`, `nom`) VALUES
 
 
 INSERT INTO utilisateur(prenom,nom, pays_id, entreprise_id, email, mot_depasse, created_at, updated_at) VALUES
- ("chris","russ", 1,1, "c@a.com", "$2a$10$wXW2wHA2bu1TdQ26p.2UoehWv8m92w88kabSeL.348VqkpWvSt51q",  UTC_TIMESTAMP(), UTC_TIMESTAMP()),
-       ("John","DOE", 2, 1, "a@a.com", "$2a$10$wXW2wHA2bu1TdQ26p.2UoehWv8m92w88kabSeL.348VqkpWvSt51q",UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+ ("chris","lebron", 1,1, "c@a.com", "$2a$10$wXW2wHA2bu1TdQ26p.2UoehWv8m92w88kabSeL.348VqkpWvSt51q",  UTC_TIMESTAMP(), UTC_TIMESTAMP()),
+       ("John","JAMES", 2, 1, "a@a.com", "$2a$10$wXW2wHA2bu1TdQ26p.2UoehWv8m92w88kabSeL.348VqkpWvSt51q",UTC_TIMESTAMP(), UTC_TIMESTAMP()),
        ("Steeve","SMITH", 3,1, "b@a.com", "$2a$10$wXW2wHA2bu1TdQ26p.2UoehWv8m92w88kabSeL.348VqkpWvSt51q", UTC_TIMESTAMP(), UTC_TIMESTAMP());
 
  INSERT INTO role_utilisateur (utilisateur_id, role_id) VALUES

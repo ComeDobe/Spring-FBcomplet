@@ -88,79 +88,293 @@
 <!--</html>-->
 
 
+<!-- Franck Bancept-  1 ->
+
+<!DOCTYPE html>
+<--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8" />-->
+<!--    <meta http-equiv="X-UA-Compatible" content="IE=edge" />-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1.0" />-->
+<!--    <title>Document</title>-->
+<!--</head>-->
+<!--<body>-->
+<!--<form onsubmit="return ajoutUtilisateur()">-->
+<!--    <input id="prenom" type="text" />-->
+<!--    <input id="nom" type="text" />-->
+<!--    <input type="submit" value="Ajouter l'utilisateur" />-->
+<!--    <select id="pays">-->
 
 
-<!-- Franck Bancept-->
+<!--    </select>-->
+<!--</form>-->
+
+<!--<ul id="liste-utilisateur"></ul>-->
+
+<!--<script>-->
+<!--    fetch("http://localhost:8081/liste-pays")-->
+<!--        .then((resultat) => resultat.json ())-->
+<!--        .then((listepays )=>{-->
+<!--            const  selecteurPays = document.querySelector("#pays");-->
+<!--            listepays.forEach( pays => {-->
+<!--                const  option = document.querySelector("option");-->
+<!--                    option.innerHTML = pays.nom;-->
+<!--                option.value = pays.id;-->
+<!--                selecteurPays.appendChild(option);-->
+<!--            });-->
+<!--        });-->
+
+<!--    function ajoutUtilisateur() {-->
+<!--        //on recupére les champs dans le DOM-->
+<!--        const champsPrenom = document.querySelector("#prenom");-->
+<!--        const champsNom = document.querySelector("#nom");-->
+
+<!--        //on créait un objet utilisateur avec les valeur des champs-->
+<!--        const utilisateur = {-->
+<!--            prenom: champsPrenom.value,-->
+<!--            nom: champsNom.value,-->
+<!--            id:sele-->
+<!--        };-->
+
+<!--        const jsonUtilisateur = JSON.stringify(utilisateur);-->
+<!--        const enTete = new Headers();-->
+<!--        enTete.set('Content-Type', 'application/json');-->
+
+<!--        fetch("http://localhost:8081/utilisateur", {-->
+<!--            method: "POST",-->
+<!--            body: jsonUtilisateur,-->
+<!--            headers:enTete-->
+<!--        }).then((resultat) => raffraichir());-->
+
+<!--        return false;-->
+<!--    }-->
+
+<!--    const baliseUl = document.querySelector("#liste-utilisateur");-->
+<!--    raffraichir();-->
+
+<!--    function raffraichir() {-->
+<!--        baliseUl.innerHTML = "";-->
+
+<!--        fetch("http://localhost:8081/utilisateur")-->
+<!--            .then((reponse) => reponse.json())-->
+<!--            .then((utilisateurs) => {-->
+<!--                utilisateurs.forEach((element) => {-->
+<!--                    const baliseLi = document.createElement("li");-->
+<!--                    baliseLi.innerHTML = `<span>${element.prenom} ${element.nom} <i> ${element.pays.nom} </i></span>`;-->
+
+<!--                    const boutonSupprimer = document.createElement("button");-->
+<!--                    boutonSupprimer.innerHTML = "X";-->
+<!--                    baliseLi.appendChild(boutonSupprimer);-->
+
+<!--                    boutonSupprimer.addEventListener("click", (e) => {-->
+<!--                        fetch("http://localhost:8081/utilisateur/" + element.id, {-->
+<!--                            method: "DELETE",-->
+<!--                        }).then((resultat) => raffraichir());-->
+<!--                    });-->
+
+<!--                    baliseUl.appendChild(baliseLi);-->
+<!--                });-->
+<!--            });-->
+<!--    }-->
+<!--</script>-->
+<!--</body>-->
+<!--</html>-->
+
+
+<!--Franck Bancepte 2-->
+
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Document</title>
 </head>
+
+<style>
+
+    .hidden {
+        display: none;
+    }
+
+
+</style>
+
 <body>
-<form onsubmit="return ajoutUtilisateur()">
-    <input id="prenom" type="text" />
-    <input id="nom" type="text" />
-    <input type="submit" value="Ajouter l'utilisateur" />
+
+<button id="boutonDeconnexion" class="hidden" onclick="deconnexion()"> deconnexion</button>
+
+<form id="formulaireConnexion" onsubmit="return connexion()">
+    <input id="email">
+    <input id="password" type="password">
+    <input type="submit" value="connexion">
+
+</form>
+<form id="formulaireAjoutUtilisateur" class="hidden" onsubmit="return ajoutUtilisateur()">
+    <input id="prenom" type="text"/>
+    <input id="nom" type="text"/>
+    <select id="pays"></select>
+    <input type="submit" value="Ajouter l'utilisateur"/>
 </form>
 
-<ul id="liste-utilisateur"></ul>
+<script>
+
+    function deconnexion() {
+        localStorage.removeItem("jwt")
+
+        raffraichir();
+    }
+
+
+    function connexion() {
+
+        const utilisateur = {
+            email: document.querySelector("#email").value,
+            motDepasse: document.querySelector("#password").value
+        }
+
+        const json = JSON.stringify(utilisateur);
+
+        const enTete = new Headers();
+        enTete.set("Content-type", "application/json");
+
+        fetch("http://localhost:8081/connexion", {
+            method: "POST",
+            body: json,
+            headers: enTete,
+        })
+
+            .then((resultat) => {
+                if (resultat.ok) {
+                    return resultat.text()
+                } else {
+                    return Promise.reject(resultat);
+                }
+            })
+            .then((jwt) => {
+                localStorage.setItem("jwt", jwt)
+                alert(" vous etes connecté")
+                raffraichir();
+            })
+
+            .catch((erro) => console.log(erro));
+
+        return false;
+    }
+
+</script>
+
+
+<ul class="hidden" id="liste-utilisateur"></ul>
 
 <script>
+
+    const selecteurPays = document.querySelector("#pays");
+
+    // const headers = new Headers();
+    // headers.set("Authorization", "Bearer " + localStorage.getItem("jwt"));
+
+
     function ajoutUtilisateur() {
         //on recupére les champs dans le DOM
         const champsPrenom = document.querySelector("#prenom");
         const champsNom = document.querySelector("#nom");
 
-        //on créait un objet utilisateur avec les valeur des champs
+        //on créait un objet utilisateur avec les valeurs des champs
         const utilisateur = {
             prenom: champsPrenom.value,
             nom: champsNom.value,
+            pays: {
+                id: selecteurPays.value
+            }
         };
 
-        const jsonUtilisateur = JSON.stringify(utilisateur);
-        const enTete = new Headers();
-        enTete.set('Content-Type', 'application/json');
 
-        fetch("http://localhost:8081/utilisateur", {
+        const jsonUtilisateur = JSON.stringify(utilisateur);
+
+        const enTete = new Headers();
+        enTete.set("Content-type", "application/json");
+        enTete.set("Authorization", "Bearer " + localStorage.getItem("jwt"));
+
+        fetch("http://localhost:8081/admin/utilisateur", {
             method: "POST",
             body: jsonUtilisateur,
-            headers:enTete
+            headers: enTete,
         }).then((resultat) => raffraichir());
 
         return false;
     }
 
     const baliseUl = document.querySelector("#liste-utilisateur");
-    raffraichir();
+    // raffraichir();
+
+    const boutonDeconnexion = document.querySelector("#boutonDeconnexion")
+    const formulaireAjoutUtilisateur = document.querySelector("#formulaireAjoutUtilisateur")
+    const formulaireConnexion = document.querySelector("#formulaireConnexion")
 
     function raffraichir() {
-        baliseUl.innerHTML = "";
 
-        fetch("http://localhost:8081/utilisateur")
-            .then((reponse) => reponse.json())
-            .then((utilisateurs) => {
-                utilisateurs.forEach((element) => {
-                    const baliseLi = document.createElement("li");
-                    baliseLi.innerHTML = `<span>${element.prenom} ${element.nom}</span>`;
+        // si l'utilisateur est connecté
+        if (localStorage.getItem("jwt")) {
 
-                    const boutonSupprimer = document.createElement("button");
-                    boutonSupprimer.innerHTML = "X";
-                    baliseLi.appendChild(boutonSupprimer);
+            baliseUl.classList.remove("hidden")
+            boutonDeconnexion.classList.remove("hidden")
+            formulaireAjoutUtilisateur.classList.remove("hidden")
+            formulaireConnexion.classList.add("hidden")
 
-                    boutonSupprimer.addEventListener("click", (e) => {
-                        fetch("http://localhost:8081/utilisateur/" + element.id, {
-                            method: "DELETE",
-                        }).then((resultat) => raffraichir());
+            baliseUl.innerHTML = "";
+
+            const headers = new Headers();
+            headers.set("Authorization", "Bearer " + localStorage.getItem("jwt"));
+
+
+            fetch("http://localhost:8081/liste-pays", {headers: headers})
+                .then((resultat) => resultat.json())
+                .then((listePays) => {
+                    listePays.forEach((pays) => {
+                        const option = document.createElement("option");
+                        option.innerHTML = pays.nom;
+                        option.value = pays.id;
+                        selecteurPays.appendChild(option);
                     });
-
-                    baliseUl.appendChild(baliseLi);
                 });
-            });
+
+
+            fetch("http://localhost:8081/admin/utilisateur", {headers: headers})
+
+                .then((reponse) => reponse.json())
+                .then((utilisateurs) => {
+                    utilisateurs.forEach((element) => {
+                        const baliseLi = document.createElement("li");
+                        baliseLi.innerHTML = `<span>${element.prenom} ${element.nom} <i>${element.pays ? element.pays.nom : ""}</i></span>`;
+
+                        const boutonSupprimer = document.createElement("button");
+                        boutonSupprimer.innerHTML = "X";
+                        baliseLi.appendChild(boutonSupprimer);
+
+
+                        boutonSupprimer.addEventListener("click", (e) => {
+                            fetch("http://localhost:8081/admin/utilisateur/" + element.id, {
+                                method: "DELETE", headers: headers
+                            }).then((resultat) => raffraichir());
+                        });
+
+                        baliseUl.appendChild(baliseLi);
+                    });
+                });
+        } else {
+            // si la personne est deconnectée
+
+            baliseUl.classList.add("hidden")
+            boutonDeconnexion.classList.add("hidden")
+            formulaireAjoutUtilisateur.classList.add("hidden")
+            formulaireConnexion.classList.remove("hidden")
+        }
     }
+
+    raffraichir();
 </script>
 </body>
 </html>
